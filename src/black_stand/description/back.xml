@@ -1,0 +1,16 @@
+<mujoco>
+  <asset>
+    <texture name="sky" type="skybox" builtin="gradient"
+             rgb1="0.2 0.15 0.25" rgb2="0.8 0.85 0.95" width="512" height="512"/>
+    <texture name="grid_tex" type="2d" builtin="checker"
+             rgb1=".4 .2 .3" rgb2=".2 .3 .4"
+             width="256" height="256" mark="edge" markrgb="0.2 0.2 0.2"/>
+
+    <material name="grid" texture="grid_tex" texrepeat="10 10" reflectance="0.2"/>
+  </asset>
+  <worldbody>
+    <geom name="floor" type="plane" size="3 3 0.1"
+          pos="0 0 -0.1"
+          material="grid"/>
+  </worldbody>
+</mujoco>

@@ -1,0 +1,12 @@
+<mujoco model="black_scene">
+  <include file="black_description.xml"/>
+  <include file="back.xml"/>
+
+  <worldbody>
+    <light name="sun" pos="0 0 3" dir="0 0 -1"
+           diffuse="1 1 1" specular="0.1 0.1 0.1"/>
+
+    <camera name="main_camera" pos="1.5 -1.5 1.0"
+            xyaxes="0.707 0.707 0 -0.408 0.408 0.816"/>
+  </worldbody>
+</mujoco>
