@@ -61,13 +61,7 @@ private:
              0.1, -0.7,  1.2,  // RR
             -0.1,  0.7, -1.2   // RL
     };
-    const std::array<double, 12> prepare_angles_ = {
-        0.0,  1.4, -2.2,  // FL
-            0.0, -1.4,  2.2,  // FR
-            0.0, -1.4,  2.2,  // RR
-            0.0,  1.4, -2.2   // RL
-    };
-
+ 
 
     void timer_callback()
     {
