@@ -424,7 +424,12 @@ if(NOT USE_CMAKE)
             sensor_msgs
             robot_interface
         )
-        target_link_libraries(rl_black_controller inference_runtime)
+        target_link_libraries(rl_black_controller
+            rl_sdk
+            observation_buffer
+            ${YAML_CPP_LIBRARIES}
+            Threads::Threads
+        )
 
         install(TARGETS rl_black_controller
             DESTINATION lib/${PROJECT_NAME}

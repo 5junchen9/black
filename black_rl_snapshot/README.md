@@ -1,11 +1,13 @@
 # Black 强化学习控制版本
 
-这里保存 2026-10-13 当前实际使用的源码、模型和场地，以及自定义 ROS 消息。它是对上游 rl_sar 的修改文件集合，不是另一个完整 rl_sar 仓库。原机器人 XML 和网格已经保存在本仓库的 `src/black_stand/description/`。
+这里保存截至 2026-10-15 当前实际使用的源码、模型和场地，以及自定义 ROS 消息。它是对上游 rl_sar 的修改文件集合，不是另一个完整 rl_sar 仓库。原机器人 XML 和网格已经保存在本仓库的 `src/black_stand/description/`。
 
 ## 已保存的内容
 
 - `rl_sar/src/rl_sar/src/black_mujoco_sim.cpp`：物理仿真、关节状态和 IMU 发布、PD 力矩计算。
 - `rl_sar/src/rl_sar/src/rl_black_controller.cpp`：观测、六帧历史、模型推理、关节映射和手柄控制。
+- `rl_sar/src/rl_sar/fsm_robot/fsm_black.hpp`：Black 接口、阻尼、0.4 秒贝塞尔起身、策略状态及工厂。
+- 公共 FSM、RL SDK 和 A1 状态文件：保留当前学习注释，公共函数逻辑不变。
 - `rl_sar/src/rl_sar/CMakeLists.txt`、`package.ros2.xml`：当前构建配置。
 - `rl_sar/policy/black/robot_lab/best.pt`：实际加载的 TorchScript 模型。
 - `scene_field.xml`：障碍练习场地。
@@ -21,7 +23,7 @@ buttons[0] 起立，buttons[1] 退出策略进入阻尼，buttons[2] 进入策�
 
 ## 恢复到上游工程
 
-上游基线：`fan-ziqi/rl_sar` 的 `376d42c9b128f963ab08579762d5a216a976ce39`。当前修改后的本地提交是 `6865448`。恢复时先准备这个基线的完整工程及其依赖，然后用本目录 `rl_sar/` 内的文件覆盖对应路径。保留上游许可证。
+上游基线：`fan-ziqi/rl_sar` 的 `376d42c9b128f963ab08579762d5a216a976ce39`。控制器迁移基线为本地提交 `f95ded7`，本快照还包含随后添加的学习注释。恢复时先准备这个基线的完整工程及其依赖，然后用本目录 `rl_sar/` 内的文件覆盖对应路径。保留上游许可证。
 
 以下路径按当前机器说明，不要在现有工作目录重复克隆或覆盖自己的未提交修改：
 
@@ -56,3 +58,9 @@ ros2 run rl_sar rl_black_controller
 ## 验证范围
 
 `./build.sh rl_sar` 完整编译通过；模型加载已检查。新场景经过 MuJoCo 加载、100 步无控制推进和离屏画面检查。持续行走和越障效果仍需运行演示验证；编译成功不代表策略能够跨越所有障碍。
+
+## 2026-10-15 状态机迁移
+
+控制器继承 BlackControl / RL，定时器依次执行 GetState、StateController、ClearInput、SetCommand。内部统一为 FL、FR、RL、RR 顺序，在 ROS 输入输出处映射。阻尼、起身和策略由 Black 状态机调度，按钮按下沿触发且阻尼优先；进入策略前需要收到 IMU。当前模型、观测布局、六帧历史、动作缩放及增益保留。
+
+控制器编译和链接通过。隔离 ROS 模拟消息检查覆盖初始阻尼、站立目标及关节映射、IMU 进入条件、模型推理、策略中忽略起身键、同时按键阻尼优先和长按不重复触发。用户反馈已完成仿真操作检查；这不是设备实测或越障能力验收。
